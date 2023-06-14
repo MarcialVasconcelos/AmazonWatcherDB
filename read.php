@@ -10,7 +10,8 @@ if (null == $id) {
 } else {
     $pdo = Banco::conectar();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = 'SELECT p.id, p.nome_projeto, p.gerente_projeto, p.id_montadora, p.responsavel_montadora, p.email_montadora, p.telefone_montadora, p.part_number_oem, p.part_number_usinado, p.part_number_fundido, m.nome AS nome_montadora FROM projeto p LEFT JOIN montadora m ON(p.id_montadora = m.id) WHERE  p.id = ? ORDER BY p.id ASC';
+    // $sql = 'SELECT p.id, p.nome_projeto, p.gerente_projeto, p.id_montadora, p.responsavel_montadora, p.email_montadora, p.telefone_montadora, p.part_number_oem, p.part_number_usinado, p.part_number_fundido, m.nome AS nome_montadora FROM projeto p LEFT JOIN montadora m ON(p.id_montadora = m.id) WHERE  p.id = ? ORDER BY p.id ASC';
+    $sql = 'SELECT * FROM produto WHERE  Product_id = ? ORDER BY datas DESC, horas DESC';
     $q = $pdo->prepare($sql);
     $q->execute(array($id));
     $data = $q->fetch(PDO::FETCH_ASSOC);
@@ -25,6 +26,7 @@ if (null == $id) {
     <meta charset="utf-8">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/customStyle.css">
     <title>Informações do Projeto</title>
 </head>
 
@@ -33,38 +35,71 @@ if (null == $id) {
     <div class="span10 offset1">
         <div class="card">
             <div class="card-header">
-                <h3 class="well">Informações do Projeto</h3>
+                <h3 class="well">Histórico de preço do Produto</h3>
             </div>
             <div class="container">
+                <aside>
+                <?php  echo '<a class="imgHolder" href="https://www.amazon.com.br/dp/'.$data['product_ID'].'/"> <img class="img" src="'. $data['imagem'] . '">  </img></a>'; ?>
+                            
+                </aside>
+                
                 <div class="form-horizontal">
                     <div class="control-group">
                         <label class="control-label">Nome</label>
                         <div class="controls form-control">
                             <label class="carousel-inner">
-                                <?php echo $data['nome_projeto']; ?>
+                                <?php echo $data['nome']; ?>
                             </label>
                         </div>
                     </div>
 
                     <div class="control-group">
-                        <label class="control-label">Gerente</label>
+                        <label class="control-label">Estrelas</label>
                         <div class="controls form-control disabled">
                             <label class="carousel-inner">
-                                <?php echo $data['gerente_projeto']; ?>
+                                <?php echo $data['estrelas']; ?>
                             </label>
                         </div>
                     </div>
 
                     <div class="control-group">
-                        <label class="control-label">Montadora</label>
+                        <label class="control-label">N° de Avaliações</label>
                         <div class="controls form-control disabled">
                             <label class="carousel-inner">
-                                <?php echo $data['nome_montadora']; ?>
+                                <?php echo $data['avaliacoes']; ?>
                             </label>
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <table class="table table-striped">
+                        <thead>                        
+                            <tr>
+                                <!--<th scope="col">Id</th>-->
+                                <th scope="col">Data</th>
+                                <th scope="col">Hora</th>
+                                <th scope="col">Preço</th>
+                                <th scope="col">Prime</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            
+                            
+                            foreach($q as $row) {
+                                echo '<tr>';
+                                //echo '<th scope="row">'. $row['id'] . '</th>';
+                                echo '<td >'. $row['datas'] . '</td>';
+                                echo '<td >'. $row['horas'] . '</td>';
+                                echo '<td>'. $row['preco'] . '</td>';
+                                echo '<td>'. $row['prime'] . '</td>';
+                                echo '</tr>';
+                            }
+                            
+                            ?>
+                        </tbody>
+                    </table>
+
+                    <!-- <div class="control-group">
                         <label class="control-label">Resp. montadora</label>
                         <div class="controls form-control disabled">
                             <label class="carousel-inner">
@@ -91,7 +126,7 @@ if (null == $id) {
                         </div>
                     </div>
 					
-					<!-- part numbers -->
+					
 					
 					<div class="control-group">
                         <label class="control-label">Part Number OEM</label>
@@ -118,8 +153,9 @@ if (null == $id) {
                                 <?php echo $data['part_number_usinado']; ?>
                             </label>
                         </div>
-                    </div>
-		 <!-- -->
+                    </div> -->
+
+                    <!-- Tabela de preços -->
 		 
                     <br/>
                     <div class="form-actions">

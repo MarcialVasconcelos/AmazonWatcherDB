@@ -29,10 +29,7 @@
                             <th scope="col">Nome</th>
                             <th scope="col">Preço</th>
                             <th scope="col">Prime</th>
-                            <th scope="col">Data</th>
-                           <!-- <th scope="col">Resp. montadora</th> -->
-                           <!-- <th scope="col">E-mail montadora</th> -->
-						   <!-- <th scope="col">Tel. montadora</th> -->
+                            <th scope="col">Última Data</th>
                             <th scope="col">Ação</th>
                         </tr>
                     </thead>
@@ -50,10 +47,7 @@
                             echo '<td>'. $row['nome'] . '</td>';
                             echo '<td>'. $row['preco'] . '</td>';
                             echo '<td>'. $row['prime'] . '</td>';
-                            echo '<td>'. $row['datas'] . '</td>';
-                            //echo '<td>'. $row['responsavel_montadora'] . '</td>';
-                            //echo '<td>'. $row['email_montadora'] . '</td>';
-							//echo '<td>'. $row['telefone_montadora'] . '</td>';
+                            echo '<td width=120>'. $row['datas'] . '</td>';
                             echo '<td width=250>';
                             echo '<a class="btn btn-primary" href="read.php?id='.$row['product_ID'].'">Info</a>';
                             echo ' ';
