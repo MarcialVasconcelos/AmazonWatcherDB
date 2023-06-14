@@ -1,12 +1,14 @@
 <?php
 
+$env = parse_ini_file('.env');
+
 class Banco
 {
     	
-	private static $dbNome = 'amazonwatcher';
-    private static $dbHost = '127.0.0.1';
-    private static $dbUsuario = 'root';
-    private static $dbSenha = '';
+	private static $dbNome =    $env['DB_DATABASE'];
+    private static $dbHost =    getenv('DB_HOST');
+    private static $dbUsuario = getenv('DB_USERNAME');
+    private static $dbSenha =   getenv('DB_PASSWORD');
     
     private static $cont = null;
     
