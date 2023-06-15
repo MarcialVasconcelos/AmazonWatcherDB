@@ -11,7 +11,7 @@ if (null == $id) {
     $pdo = Banco::conectar();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // $sql = 'SELECT p.id, p.nome_projeto, p.gerente_projeto, p.id_montadora, p.responsavel_montadora, p.email_montadora, p.telefone_montadora, p.part_number_oem, p.part_number_usinado, p.part_number_fundido, m.nome AS nome_montadora FROM projeto p LEFT JOIN montadora m ON(p.id_montadora = m.id) WHERE  p.id = ? ORDER BY p.id ASC';
-    $sql = 'SELECT * FROM produto WHERE  Product_id = ? ORDER BY datas DESC, horas DESC';
+    $sql = 'SELECT * FROM produto WHERE  Product_id = ? AND preco != 0 ORDER BY datas DESC, horas DESC';
     $q = $pdo->prepare($sql);
     $q->execute(array($id));
     $data = $q->fetch(PDO::FETCH_ASSOC);
@@ -79,6 +79,7 @@ if (null == $id) {
                                 <th scope="col">Hora</th>
                                 <th scope="col">Preço</th>
                                 <th scope="col">Prime</th>
+                                <th scope="col">Ação</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,6 +93,11 @@ if (null == $id) {
                                 echo '<td >'. $row['horas'] . '</td>';
                                 echo '<td>'. $row['preco'] . '</td>';
                                 echo '<td>'. $row['prime'] . '</td>';
+                                echo '<td width=200>';
+                                echo '<a class="btn btn-warning" href="update.php?id='.$row['id'].'">Editar</a>';
+                                echo ' ';
+                                echo '<a class="btn btn-danger" href="delete.php?id='.$row['id'].'">Excluir</a>';
+                                echo '</td>';
                                 echo '</tr>';
                             }
                             

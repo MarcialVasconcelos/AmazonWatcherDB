@@ -38,7 +38,7 @@
                         include 'banco.php';
                         $pdo = Banco::conectar();
                         // $sql = 'SELECT product_ID, nome, imagem, preco, prime, data, hora (SELECT * , ROW_NUMBER() OVER (PARTITION BY product_ID ORDER BY data DESC)FROM produto ORDER BY nome DESC, hora DESC LIMIT 100) AS a';
-                        $sql = 'SELECT product_ID, nome, imagem, preco, prime, datas, horas FROM (SELECT * , ROW_NUMBER() OVER (PARTITION BY product_ID ORDER BY datas DESC) rn FROM produto) AS a WHERE rn=1 ORDER BY datas DESC, horas DESC';
+                        $sql = 'SELECT product_ID, nome, imagem, preco, prime, datas FROM (SELECT * , ROW_NUMBER() OVER (PARTITION BY product_ID ORDER BY datas DESC, horas DESC) rn FROM produto WHERE preco != 0 ORDER BY datas DESC, horas DESC) AS a WHERE rn=1 ORDER BY datas DESC, horas DESC';
 
                         foreach($pdo->query($sql)as $row) {
                             echo '<tr>';
@@ -48,12 +48,8 @@
                             echo '<td>'. $row['preco'] . '</td>';
                             echo '<td>'. $row['prime'] . '</td>';
                             echo '<td width=120>'. $row['datas'] . '</td>';
-                            echo '<td width=250>';
+                            echo '<td >';
                             echo '<a class="btn btn-primary" href="read.php?id='.$row['product_ID'].'">Info</a>';
-                            echo ' ';
-                            echo '<a class="btn btn-warning" href="update.php?id='.$row['product_ID'].'">Editar</a>';
-                            echo ' ';
-                            echo '<a class="btn btn-danger" href="delete.php?id='.$row['product_ID'].'">Excluir</a>';
                             echo '</td>';
                             echo '</tr>';
                         }
