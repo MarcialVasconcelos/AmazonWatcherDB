@@ -1,5 +1,4 @@
 <?php
-
 require 'banco.php';
 
 $id = null;
@@ -13,86 +12,104 @@ if (null == $id) {
 
 if (!empty($_POST)) {
 
-    $nomeProjetoErro = null;
-    $gerenteProjetoErro = null;
-    $montadoraErro = null;
-    $responsavelMontadoraErro = null;
-    $emailMontadoraErro = null;
-	$telefoneMontadoraErro = null;
+    $productIdErro = null;
+    $nomeErro = null;
+    $primeErro = null;
+    $imagemErro = null;
+    $estrelasErro = null;
+    $avaliacoesErro = null;
+	$precoErro = null;
+	$dataErro = null;
+	$horaErro = null;
 
-    $nomeProjeto = $_POST['nome_projeto'];
-    $gerenteProjeto = $_POST['gerente_projeto'];
-    $montadora = $_POST['montadora'];
-    $responsavelMontadora = $_POST['responsavel_montadora'];
-    $emailMontadora = $_POST['email_montadora'];
-	$telefoneMontadora = $_POST['telefone_montadora'];
-	$partNumberOem = $_POST['part_number_oem'];
-    $partNumberFundido = $_POST['part_number_fundido'];
-	$partNumberUsinado = $_POST['part_number_usinado'];
+    // $id = $_POST['id'];
+    $Product_ID = $_POST['product_ID'];
+    $nome = $_POST['nome'];
+    $prime = $_POST['prime'];
+    $imagem = $_POST['imagem'];
+    $estrelas = $_POST['estrelas'];
+	$avaliacoes = $_POST['avaliacoes'];
+	$preco = $_POST['preco'];
+    $datas = $_POST['datas'];
+	$horas = $_POST['horas'];
 
     //Validação
     $validacao = true;
 	
-    if (empty($nomeProjeto)) {
-        $nomeProjetoErro = 'Por favor digite o nome do projeto!';
-        $validacao = false;
+    if (empty($Product_ID)) {
+        $productIdErro = 'Por favor digite o ID do produto!';
+        $validacao = False;
+    }
+    
+    if (empty($nome)) {
+        $nomeErro = 'Por favor digite o nome do produto!';
+        $validacao = False;
     }
 
-    if (empty($gerenteProjeto)) {
-        $gerenteProjetoErro = 'Por favor digite o nome do gerente do projeto!';
-        $validacao = false;
+    if (empty($prime) && $prime!=0 ) {
+        $primeErro = 'Por favor selecione uma opção';
+        $validacao = False;
     }
 
-    if (empty($montadora)) {
-        $montadoraErro = 'Por favor digite o nome da montadora!';
-        $validacao = false;
+    if (empty($imagem)) {
+        $imagemErro = 'Por favor digite o link da imagem!';
+        $validacao = False;
     }
 
-    if (empty($responsavelMontadora)) {
-        $responsavelMontadoraErro = 'Por favor digite o nome do responsavel da montadora!';
-        $validacao = false;
+    if (empty($estrelas)) {
+        $estrelasErro = 'Por favor digite a nota do produto!';
+        $validacao = False;
     }
-	
-	if (empty($emailMontadora)) {
-        $emailMontadoraErro = 'Por favor digite um endereço de e-mail!';
-        $validacao = false;
-    } else if (!filter_var($emailMontadora, FILTER_VALIDATE_EMAIL)) {
-        $emailMontadoraErro = 'Por favor digite um endereço de e-mail válido!';
-        $validacao = false;
+
+    if (empty($avaliacoes)) {
+        $avaliacoesErro = 'Por favor digite o número de avaliações!';
+        $validacao = False;
     }
-	
-	if (empty($telefoneMontadora)) {
-        $sexoErro = 'Por favor preenche o campo!';
-        $validacao = false;
+    
+    if (empty($preco)) {
+        $precoErro = 'Por favor digite o preço!';
+        $validacao = False;
+    }
+
+    if (empty($datas)) {
+        $dataErro = 'Por favor digite uma data!';
+        $validacao = False;
+    }
+    
+    if (empty($horas)) {
+        $horaErro = 'Por favor digite um horário!';
+        $validacao = False;
     }
 
     // update data
     if ($validacao) {
         $pdo = Banco::conectar();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "UPDATE projeto set nome_projeto = ?, gerente_projeto = ?, id_montadora = ?, responsavel_montadora = ?, email_montadora = ?, telefone_montadora = ?, part_number_oem = ?, part_number_fundido = ?, part_number_usinado = ? WHERE id = ?";
+        $sql = "UPDATE produto set product_ID = ?, nome = ?, prime = ?, imagem = ?, estrelas = ?, avaliacoes = ?, preco = ?, datas = ?, horas = ? WHERE id = ?";
         $q = $pdo->prepare($sql);
-        $q->execute(array($nomeProjeto, $gerenteProjeto, $montadora, $responsavelMontadora, $emailMontadora, $telefoneMontadora, $partNumberOem, $partNumberFundido, $partNumberUsinado, $id));
+        $q->execute(array($Product_ID, $nome, $prime, $imagem, $estrelas, $avaliacoes, $preco, $datas, $horas,$id));
         Banco::desconectar();
-        header("Location: index.php");
+        // header("Location: index.php");
+        header('Location: read.php?id='.$Product_ID.'');
     }
-} else {
+}
+else {
     $pdo = Banco::conectar();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = 'SELECT p.id, p.nome_projeto, p.gerente_projeto, p.id_montadora, p.responsavel_montadora, p.email_montadora, p.telefone_montadora, p.part_number_oem, p.part_number_usinado, p.part_number_fundido, m.nome AS nome_montadora FROM projeto p LEFT JOIN montadora m ON(p.id_montadora = m.id) WHERE p.id = ? ORDER BY p.id ASC';
+    $sql = 'SELECT * FROM produto WHERE  id = ? AND preco != 0 ORDER BY datas DESC, horas DESC';
     $q = $pdo->prepare($sql);
     $q->execute(array($id));
     $data = $q->fetch(PDO::FETCH_ASSOC);
-	
-	$nomeProjeto = $data['nome_projeto'];
-    $gerenteProjeto = $data['gerente_projeto'];
-    $montadora = $data['id_montadora'];
-    $responsavelMontadora = $data['responsavel_montadora'];
-    $emailMontadora = $data['email_montadora'];
-	$telefoneMontadora = $data['telefone_montadora'];
-	$partNumberOem = $data['part_number_oem'];
-    $partNumberFundido = $data['part_number_fundido'];
-	$partNumberUsinado = $data['part_number_usinado'];
+    
+    $Product_ID = $data['product_ID'];
+    $nome = $data['nome'];
+    $prime = $data['prime'];
+    $imagem = $data['imagem'];
+    $estrelas = $data['estrelas'];
+    $avaliacoes = $data['avaliacoes'];
+    $preco = $data['preco'];
+    $datas = $data['datas'];
+    $horas = $data['horas'];
 }
 ?>
 
@@ -107,7 +124,7 @@ if (!empty($_POST)) {
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-    <title>Atualizar Projeto</title>
+    <title>Atualizar produto</title>
 </head>
 
 <body>
@@ -116,125 +133,115 @@ if (!empty($_POST)) {
     <div class="span10 offset1">
         <div class="card">
             <div class="card-header">
-                <h3 class="well"> Atualizar Projeto </h3>
+                <h3 class="well"> Atualizar produto </h3>
             </div>
             <div class="card-body">
                 <form class="form-horizontal" action="update.php?id=<?php echo $id ?>" method="post">
 
-                    <div class="control-group  <?php echo !empty($nomeProjetErro) ? 'error ' : ''; ?>">
-                        <label class="control-label">Nome projeto*</label>
+                    <div class="control-group  <?php echo !empty($productIdErro) ? 'error ' : ''; ?>">
+                        <label class="control-label">ID do produto*</label>
                         <div class="controls">
-                            <input size="50" class="form-control" name="nome_projeto" type="text" placeholder="Nome projeto"
-                                   value="<?php echo !empty($nomeProjeto) ? $nomeProjeto : ''; ?>">
-                            <?php if (!empty($nomeProjetoErro)): ?>
+                            <input size="50" class="form-control" name="product_ID" type="text" placeholder="ID"
+                                   value="<?php echo !empty($Product_ID) ? $Product_ID : ''; ?>">
+                            <?php if (!empty($productIdErro)): ?>
+                                <span class="text-danger"><?php echo $productIdErro; ?></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                
+                    <div class="control-group  <?php echo !empty($nomeErro) ? 'error ' : ''; ?>">
+                        <label class="control-label">Nome produto*</label>
+                        <div class="controls">
+                            <input size="50" class="form-control" name="nome" type="text" placeholder="Nome do produto"
+                                   value="<?php echo !empty($nome) ? $nome : ''; ?>">
+                            <?php if (!empty($nomeErro)): ?>
                                 <span class="text-danger"><?php echo $nomeErro; ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
 
-                    <div class="control-group <?php echo !empty($gerenteProjetoErro) ? 'error ' : ''; ?>">
-                        <label class="control-label">Gerente projeto*</label>
+                    <div class="control-group <?php echo !empty($primeErro) ? 'error ' : ''; ?>">
+                        <label class="control-label">Prime*</label>
                         <div class="controls">
-                            <input size="80" class="form-control" name="gerente_projeto" type="text" placeholder="Gerente projeto"
-                                   value="<?php echo !empty($gerenteProjeto) ? $gerenteProjeto : ''; ?>">
-                            <?php if (!empty($gerenteProjetoErro)): ?>
-                                <span class="text-danger"><?php echo $gerenteProjetoErro; ?></span>
+                                <input size="50" class="form-control" name="prime" type="text" placeholder="Prime? (Digite 1 ou 0)"
+                                    value="<?php echo !empty($prime)||$prime==0 ? $prime : ''; ?>">
+                                <?php if (!empty($primeErro)): ?>
+                                    <span class="text-danger"><?php echo $primeErro; ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
 
-                    <div class="control-group <?php echo !empty($montadoraErro) ? 'error ' : ''; ?>">
-                        <label class="control-label">Montadora*</label>
+                    <div class="control-group <?php echo !empty($imagemErro) ? 'error ' : ''; ?>">
+                        <label class="control-label">Link da Imagem*</label>
                         <div class="controls">
-						
-                <?php
-                        $sql = 'SELECT * from montadora';
-						$selected = "";
-						
-						echo '<select name="montadora" size="1">';
-                        foreach($pdo->query($sql)as $row)
-                        {
-							if($row['id'] == $montadora){
-								$selected = " selected";
-							}else{
-								$selected = "";
-							}
-                            echo '<option value="'. $row['id'] .'"'.$selected.'>'. $row['nome'] . '</option>';
-                        }
-						
-						echo '</select>';
-                        Banco::desconectar();
-             ?>
-								   
-                            <?php if (!empty($montadoraErro)): ?>
-                                <span class="text-danger"><?php echo $montadoraErro; ?></span>
+                            <input size="80" class="form-control" name="imagem" type="text" placeholder="Link da imagem"
+                                   value="<?php echo !empty($imagem) ? $imagem : ''; ?>">
+                            <?php if (!empty($imagemErro)): ?>
+                                <span class="text-danger"><?php echo $imagemErro; ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
 					
-					<div class="control-group <?php echo !empty($responsavelMontadoraErro) ? 'error ' : ''; ?>">
-                        <label class="control-label">Responsavel montadora*</label>
+					<div class="control-group <?php echo !empty($estrelasErro) ? 'error ' : ''; ?>">
+                        <label class="control-label">Nº de Estrelas*</label>
                         <div class="controls">
-                            <input size="35" class="form-control" name="responsavel_montadora" type="text" placeholder="Responsavel montadora"
-                                   value="<?php echo !empty($responsavelMontadora) ? $responsavelMontadora : ''; ?>">
-                            <?php if (!empty($responsavelMontadoraErro)): ?>
-                                <span class="text-danger"><?php echo $responsavelMontadoraErro; ?></span>
+                            <input size="35" class="form-control" name="estrelas" type="text" placeholder="Estrelas"
+                                   value="<?php echo !empty($estrelas) ? $estrelas : ''; ?>">
+                            <?php if (!empty($estrelasErro)): ?>
+                                <span class="text-danger"><?php echo $estrelasErro; ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
 
-                    <div class="control-group <?php !empty($emailMontadoraErro) ? '$emailMontadoraErro ' : ''; ?>">
-                        <label class="control-label">E-mail montadora*</label>
+                    <div class="control-group <?php !empty($avaliacoesErro) ? '$avaliacoesErro ' : ''; ?>">
+                        <label class="control-label">N° de avaliações*</label>
                         <div class="controls">
-                            <input size="40" class="form-control" name="email_montadora" type="text" placeholder="E-mail Montadora"
-                                   value="<?php echo !empty($emailMontadora) ? $emailMontadora : ''; ?>">
-                            <?php if (!empty($emailMontadoraErro)): ?>
-                                <span class="text-danger"><?php echo $emailMontadoraErro; ?></span>
+                            <input size="40" class="form-control" name="avaliacoes" type="text" placeholder="Avaliações"
+                                   value="<?php echo !empty($avaliacoes) ? $avaliacoes : ''; ?>">
+                            <?php if (!empty($avaliacoesErro)): ?>
+                                <span class="text-danger"><?php echo $avaliacoesErro; ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
 
-					<div class="control-group <?php !empty($telefoneMontadoraErro) ? '$telefoneMontadoraErro ' : ''; ?>">
-                        <label class="control-label">Telefone montadora*</label>
+					<div class="control-group <?php !empty($precoErro) ? '$precoErro ' : ''; ?>">
+                        <label class="control-label">Preço*</label>
                         <div class="controls">
-                            <input size="40" class="form-control" name="telefone_montadora" type="text" placeholder="Telefone Montadora"
-                                   value="<?php echo !empty($telefoneMontadora) ? $telefoneMontadora : ''; ?>">
-                            <?php if (!empty($telefoneMontadoraErro)): ?>
-                                <span class="text-danger"><?php echo $telefoneMontadoraErro; ?></span>
+                            <input size="40" class="form-control" name="preco" type="text" placeholder="R$ 00,00"
+                                   value="<?php echo !empty($preco) ? $preco : ''; ?>">
+                            <?php if (!empty($precoErro)): ?>
+                                <span class="text-danger"><?php echo $precoErro; ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
-					
-					<!-- part numbers -->
-					
-					<div class="control-group">
-                        <label class="control-label">Part Number OEM</label>
+
+					<div class="control-group <?php !empty($dataErro) ? '$dataErro ' : ''; ?>">
+                        <label class="control-label">Data*</label>
                         <div class="controls">
-                            <input size="35" class="form-control" name="part_number_oem" type="text" placeholder="Part Number OEM"
-                                   value="<?php echo !empty($partNumberOem) ? $partNumberOem : ''; ?>">
+                            <input size="40" class="form-control" name="datas" type="text" placeholder="DD/MM/AAAA"
+                                   value="<?php echo !empty($datas) ? $datas : ''; ?>">
+                            <?php if (!empty($dataErro)): ?>
+                                <span class="text-danger"><?php echo $dataErro; ?></span>
+                            <?php endif; ?>
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label class="control-label">Part Number fundido</label>
+					<div class="control-group <?php !empty($horaErro) ? '$horaErro ' : ''; ?>">
+                        <label class="control-label">Horário*</label>
                         <div class="controls">
-                            <input size="35" class="form-control" name="part_number_fundido" type="text" placeholder="Part Number fundido"
-                                   value="<?php echo !empty($partNumberFundido) ? $partNumberFundido : ''; ?>">
+                            <input size="40" class="form-control" name="horas" type="text" placeholder="HH:MM:SS"
+                                   value="<?php echo !empty($horas) ? $horas : ''; ?>">
+                            <?php if (!empty($horaErro)): ?>
+                                <span class="text-danger"><?php echo $horaErro; ?></span>
+                            <?php endif; ?>
                         </div>
                     </div>
 
-					<div class="control-group">
-                        <label class="control-label">Part Number usinado</label>
-                        <div class="controls">
-                            <input size="35" class="form-control" name="part_number_usinado" type="text" placeholder="Part Number usinado"
-                                   value="<?php echo !empty($partNumberUsinado) ? $partNumberUsinado : ''; ?>">
-                        </div>
-                    </div>
-		 <!-- -->
                     <div class="form-actions">
                         <br/>
-                        <button type="submit" class="btn btn-success">Atualizar</button>
-                        <a href="index.php" type="btn" class="btn btn-default">Voltar</a>
+                        <button type="submit" class="btn btn-success">Atualizar</button>                        
+                        <?php echo '<a href="read.php?id=' .$Product_ID. '" type="btn" class="btn btn-default">Voltar</a>' ?>
+                        <!-- <a href="index.php" type="btn" class="btn btn-default">Voltar</a> -->
                     </div>
                 </form>
             </div>

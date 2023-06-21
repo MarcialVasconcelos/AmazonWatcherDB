@@ -71,6 +71,10 @@ if (null == $id) {
                         </div>
                     </div>
 
+                    <div class="form-actions">
+                        <a href="index.php" type="btn" class="btn btn-default">Voltar</a>
+                    </div>  
+
                     <table class="table table-striped">
                         <thead>                        
                             <tr>

@@ -33,14 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $validacao = False;
         }
 
-
-        if (!empty($_POST['prime'])) {
+        if (!empty($_POST['prime']) || $_POST['prime']==0) {
             $prime = $_POST['prime'];
         } else {
             $primeErro = 'Por favor selecione uma opção';
             $validacao = False;
         }
-
 
         if (!empty($_POST['imagem'])) {
             $imagem = $_POST['imagem'];
@@ -89,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($validacao) {
         $pdo = Banco::conectar();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "INSERT INTO produto(Product_ID, nome, prime, id_montadora, estrelas, avaliacoes, preco) VALUES(?,?,?,?,?,?)";
+        $sql = "INSERT INTO produto(Product_ID, nome, prime, imagem, estrelas, avaliacoes, preco, datas, horas) VALUES(?,?,?,?,?,?,?,?,?)";
         $q = $pdo->prepare($sql);
         $q->execute(array($Product_ID, $nome, $prime, $imagem, $estrelas, $avaliacoes, $preco, $datas, $horas));
         Banco::desconectar();
@@ -106,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <title>Adicionar Projeto</title>
+    <title>Adicionar Produto</title>
 </head>
 
 <body>
@@ -114,12 +112,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div clas="span10 offset1">
         <div class="card">
             <div class="card-header">
-                <h3 class="well"> Adicionar Projeto </h3>
+                <h3 class="well"> Adicionar Produto </h3>
             </div>
             <div class="card-body">
                 <form class="form-horizontal" action="create.php" method="post">
 
-                    <div class="control-group  <?php echo !empty($nomeProjetErro) ? 'error ' : ''; ?>">
+                    <div class="control-group  <?php echo !empty($productIdErro) ? 'error ' : ''; ?>">
+                        <label class="control-label">ID do produto*</label>
+                        <div class="controls">
+                            <input size="50" class="form-control" name="Product_ID" type="text" placeholder="ID"
+                                   value="<?php echo !empty($Product_ID) ? $Product_ID : ''; ?>">
+                            <?php if (!empty($productIdErro)): ?>
+                                <span class="text-danger"><?php echo $productIdErro; ?></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                
+                    <div class="control-group  <?php echo !empty($nomeErro) ? 'error ' : ''; ?>">
                         <label class="control-label">Nome produto*</label>
                         <div class="controls">
                             <input size="50" class="form-control" name="nome" type="text" placeholder="Nome do produto"
@@ -141,8 +150,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 echo '<option value=1>Verdadeiro</option>';
                                 echo '</select>';
                             
-                            if (!empty($primeErro)): ?>
-                                <span class="text-danger"><?php echo $primeErro; ?></span>
+                                if (!empty($primeErro)): ?>
+                                    <span class="text-danger"><?php echo $primeErro; ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -236,4 +245,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 
 </html>
-
