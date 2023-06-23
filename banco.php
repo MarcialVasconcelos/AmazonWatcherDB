@@ -15,15 +15,15 @@ class Banco {
         );
         
         if (!in_array($_SERVER['REMOTE_ADDR'], $whitelist)){
-             $dbNome =    getenv('DB_DATABASE');
-             $dbHost =    getenv('DB_HOST');
-             $dbUsuario = getenv('DB_USERNAME');
-             $dbSenha =   getenv('DB_PASSWORD');
+            $dbNome =    getenv('DB_DATABASE');
+            $dbHost =    getenv('DB_HOST');
+            $dbUsuario = getenv('DB_USERNAME');
+            $dbSenha =   getenv('DB_PASSWORD');
         }else{
-             $dbNome =    'amazonwatcher';
-             $dbHost =    '127.0.0.1';
-             $dbUsuario = 'root';
-             $dbSenha =   '';
+            $dbNome =    'amazondb';
+            $dbHost =    '127.0.0.1';
+            $dbUsuario = 'root';
+            $dbSenha =   '';
         }
         if(null == self::$cont) {
             try {
