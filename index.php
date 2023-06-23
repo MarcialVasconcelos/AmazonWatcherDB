@@ -38,7 +38,7 @@
                         include 'banco.php';
                         $pdo = Banco::conectar();
                         // $sql = 'SELECT product_ID, nome, imagem, preco, prime, data, hora (SELECT * , ROW_NUMBER() OVER (PARTITION BY product_ID ORDER BY data DESC)FROM produto ORDER BY nome DESC, hora DESC LIMIT 100) AS a';
-                        $sql = 'SELECT DISTINCT product_ID, nome, imagem, preco, prime, estrelas, datas AS datas FROM (SELECT id, product_ID, nome, imagem, preco, prime, estrelas, avaliacoes , STR_TO_DATE(datas, "%d/%m/%Y") AS datas, horas FROM produto ORDER BY datas DESC, horas DESC) prod GROUP BY product_ID ORDER BY estrelas DESC';
+                        $sql = 'SELECT DISTINCT product_ID, nome, imagem, preco, prime, estrelas, datas AS datas FROM (SELECT id, product_ID, nome, imagem, preco, prime, estrelas, avaliacoes , STR_TO_DATE(datas, "%d/%m/%Y") AS datas, horas FROM produto ORDER BY datas DESC, horas DESC) prod ORDER BY estrelas DESC';
 
                         foreach($pdo->query($sql)as $row) {
                             echo '<tr>';
