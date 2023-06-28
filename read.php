@@ -11,7 +11,7 @@ if (null == $id) {
     $pdo = Banco::conectar();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // $sql = 'SELECT p.id, p.nome_projeto, p.gerente_projeto, p.id_montadora, p.responsavel_montadora, p.email_montadora, p.telefone_montadora, p.part_number_oem, p.part_number_usinado, p.part_number_fundido, m.nome AS nome_montadora FROM projeto p LEFT JOIN montadora m ON(p.id_montadora = m.id) WHERE  p.id = ? ORDER BY p.id ASC';
-    $sql = 'SELECT id, product_ID, nome, imagem, preco, prime, estrelas, avaliacoes , STR_TO_DATE(datas, "%d/%m/%Y") AS datas, horas FROM produto WHERE  Product_id = ? AND preco != 0 ORDER BY datas DESC, horas DESC';
+    $sql = 'SELECT id, product_ID, nome, imagem, preco, prime, estrelas, avaliacoes , STR_TO_DATE(datas, "%d/%m/%Y") AS datas, horas FROM produto WHERE  Product_id = ? ORDER BY datas DESC, horas DESC';
     $q = $pdo->prepare($sql);
     $q->execute(array($id));
     $data = $q->fetch(PDO::FETCH_ASSOC);
